@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
+import MobileNav from './components/MobileNav'
 import Home from './pages/Home'
 import Products from './pages/Products'
 import ProductDetail from './pages/ProductDetail'
@@ -10,7 +11,7 @@ function App() {
   const { cart, itemCount, addItem, removeItem, clearCart, loading } = useCart()
 
   return (
-    <div className="min-h-dvh bg-bg">
+    <div className="min-h-dvh bg-bg pb-16 sm:pb-0">
       <Navbar cartCount={itemCount} />
 
       <Routes>
@@ -32,6 +33,8 @@ function App() {
           }
         />
       </Routes>
+
+      <MobileNav cartCount={itemCount} />
     </div>
   )
 }

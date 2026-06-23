@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { FiMic, FiMicOff } from 'react-icons/fi'
+import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 
 export default function VoiceButton({ isRecording, isProcessing, onStart, onStop }) {
   const { t } = useTranslation()
@@ -14,7 +15,7 @@ export default function VoiceButton({ isRecording, isProcessing, onStart, onStop
   }
 
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div className="flex flex-col items-center gap-4">
       <button
         onClick={handleClick}
         disabled={isProcessing}
@@ -23,17 +24,27 @@ export default function VoiceButton({ isRecording, isProcessing, onStart, onStop
             ? 'bg-gray-300 cursor-not-allowed'
             : isRecording
             ? 'bg-red-500 hover:bg-red-600 mic-pulse'
-            : 'bg-primary hover:bg-primary-dark shadow-lg hover:shadow-xl hover:scale-105'
+            : 'bg-primary hover:bg-primary-dark shadow-lg hover:shadow-xl hover:scale-105 active:scale-95'
         }`}
       >
-        {isRecording ? (
+        {isProcessing ? (
+          <AiOutlineLoading3Quarters size={32} className="text-white animate-spin" />
+        ) : isRecording ? (
           <FiMicOff size={32} className="text-white relative z-10" />
         ) : (
           <FiMic size={32} className="text-white" />
         )}
       </button>
 
-      <p className="text-sm text-text-light">
+      {isRecording && (
+        <div className="flex items-center gap-1 h-8">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="sound-wave-bar" />
+          ))}
+        </div>
+      )}
+
+      <p className={`text-sm transition-colors ${isRecording ? 'text-red-500 font-medium' : 'text-text-light'}`}>
         {isProcessing
           ? t('processing')
           : isRecording

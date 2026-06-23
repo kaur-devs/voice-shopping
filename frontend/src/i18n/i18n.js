@@ -5,6 +5,10 @@ import en from './en.json'
 import hi from './hi.json'
 import ta from './ta.json'
 import te from './te.json'
+import kn from './kn.json'
+import bn from './bn.json'
+import mr from './mr.json'
+import gu from './gu.json'
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -12,6 +16,10 @@ i18n.use(initReactI18next).init({
     hi: { translation: hi },
     ta: { translation: ta },
     te: { translation: te },
+    kn: { translation: kn },
+    bn: { translation: bn },
+    mr: { translation: mr },
+    gu: { translation: gu },
   },
   lng: 'en',
   fallbackLng: 'en',
