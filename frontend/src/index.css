@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #ff3f6c;
+  --color-primary-dark: #e6335e;
+  --color-secondary: #ff7f50;
+  --color-bg: #f5f5f6;
+  --color-card: #ffffff;
+  --color-text: #282c3f;
+  --color-text-light: #94969f;
+  --color-border: #d4d5d9;
+  --color-success: #14cda8;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', 'Noto Sans Devanagari', 'Noto Sans Tamil', 'Noto Sans Telugu', system-ui, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+.mic-pulse::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  animation: pulse-ring 1.2s ease-out infinite;
+}
