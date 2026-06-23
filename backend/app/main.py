@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database.connection import connect_db, close_db
+from app.routes import products
 
 app = FastAPI(
     title="Voice Shopping for Bharat",
@@ -15,6 +16,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+app.include_router(products.router, prefix="/api/products", tags=["products"])
 
 
 @app.on_event("startup")
