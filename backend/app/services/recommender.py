@@ -50,7 +50,7 @@ async def get_recommendations(product_id: str, n: int = 8) -> list:
 
 async def _fallback_recommendations(product_id: str, n: int = 8) -> list:
     db = get_db()
-    if not db:
+    if db is None:
         return []
 
     from bson import ObjectId

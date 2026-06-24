@@ -1,36 +1,45 @@
-from deepgram import DeepgramClient, PrerecordedOptions, FileSource
+import aiohttp
 from app.config import DEEPGRAM_API_KEY
 
-deepgram = None
+DEEPGRAM_URL = "https://api.deepgram.com/v1/listen"
 
 
-def get_deepgram():
-    global deepgram
-    if deepgram is None and DEEPGRAM_API_KEY:
-        deepgram = DeepgramClient(DEEPGRAM_API_KEY)
-    return deepgram
-
-
-async def transcribe_audio(audio_bytes: bytes, mime_type: str = "audio/wav") -> dict:
-    dg = get_deepgram()
-    if not dg:
+async def transcribe_audio(audio_bytes: bytes, mime_type: str = "audio/webm") -> dict:
+    if not DEEPGRAM_API_KEY:
         return {"transcript": "", "language": "en", "error": "Deepgram API key not configured"}
 
-    payload: FileSource = {"buffer": audio_bytes}
-    options = PrerecordedOptions(
-        model="nova-2",
-        detect_language=True,
-        smart_format=True,
-        punctuate=True,
-    )
-
-    response = await dg.listen.asyncrest.v("1").transcribe_file(payload, options)
-    result = response.results
-    transcript = result.channels[0].alternatives[0].transcript
-    detected_lang = result.channels[0].detected_language or "hi"
-
-    return {
-        "transcript": transcript,
-        "language": detected_lang,
-        "confidence": result.channels[0].alternatives[0].confidence,
+    headers = {
+        "Authorization": f"Token {DEEPGRAM_API_KEY}",
+        "Content-Type": mime_type,
     }
+    params = {
+        "model": "nova-2",
+        "detect_language": "true",
+        "smart_format": "true",
+        "punctuate": "true",
+    }
+
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                DEEPGRAM_URL,
+                headers=headers,
+                params=params,
+                data=audio_bytes,
+                timeout=aiohttp.ClientTimeout(total=30),
+            ) as response:
+                response.raise_for_status()
+                data = await response.json()
+
+        channel = data["results"]["channels"][0]
+        transcript = channel["alternatives"][0]["transcript"]
+        detected_lang = channel.get("detected_language", "hi")
+        confidence = channel["alternatives"][0].get("confidence", 0)
+
+        return {
+            "transcript": transcript,
+            "language": detected_lang,
+            "confidence": confidence,
+        }
+    except Exception as e:
+        return {"transcript": "", "language": "en", "error": str(e)}

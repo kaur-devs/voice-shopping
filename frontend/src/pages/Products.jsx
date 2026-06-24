@@ -88,22 +88,6 @@ export default function Products() {
         ))}
       </div>
 
-      <div className="flex gap-2 mb-6">
-        {['Men', 'Women', 'Kids'].map((g) => (
-          <button
-            key={g}
-            onClick={() => setFilter('gender', activeGender === g ? '' : g)}
-            className={`px-4 py-1.5 rounded-full text-sm border cursor-pointer transition-colors ${
-              activeGender === g
-                ? 'bg-text text-white border-text'
-                : 'bg-white text-text border-border hover:border-text'
-            }`}
-          >
-            {g}
-          </button>
-        ))}
-      </div>
-
       <ProductGrid products={products} loading={loading} />
 
       {totalPages > 1 && (

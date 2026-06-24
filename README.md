@@ -10,18 +10,19 @@ Built for Tier 2/3 city users who aren't comfortable with English UIs — solvin
 |-------|-----------|
 | Frontend | React.js (Vite) + TailwindCSS |
 | Backend | Python / FastAPI |
-| Speech-to-Text | Deepgram (Nova-2, real-time) |
+| Speech-to-Text | Deepgram Nova-2 (REST API) |
 | Translation | Google Translate API |
 | Text-to-Speech | gTTS |
 | Database | MongoDB Atlas |
 | ML | scikit-learn (content-based recommendations) |
+| Product Data | Scraped from Indian Shopify stores (Libas, Snitch, Sassafras, Jaipur Kurti) |
 
 ## How It Works
 
 ```
 User speaks: "मुझे लाल कुर्ता दिखाओ" (Show me red kurta)
     ↓ Deepgram transcribes voice
-    ↓ Translator converts to English
+    ↓ Auto-detects language, translates to English
     ↓ Intent parser extracts: {color: red, item: kurta}
     ↓ MongoDB finds matching products
     ↓ Response translated back to Hindi
@@ -46,14 +47,14 @@ User sees products + hears response in their language
 
 ### Prerequisites
 - Node.js 18+
-- Python 3.10+
+- Python 3.12
 - MongoDB Atlas account (free tier)
 - Deepgram API key (free $200 credit)
 
 ### Backend
 ```bash
 cd backend
-python -m venv venv
+python3.12 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env  # Add your API keys
@@ -69,9 +70,8 @@ npm run dev
 
 ### Seed Product Data
 ```bash
-cd data
-python process_data.py
-cd ../backend
+python data/process_data.py
+cd backend && source venv/bin/activate
 python -m app.database.seed
 ```
 
@@ -79,22 +79,27 @@ python -m app.database.seed
 
 ```
 ├── frontend/          # React app (Vite + TailwindCSS)
+│   └── src/
+│       ├── components/  # ProductCard, VoiceButton, Navbar, etc.
+│       ├── pages/       # Home (chat UI), Products, Cart
+│       ├── hooks/       # useVoiceRecorder, useCart
+│       └── services/    # API client
 ├── backend/           # FastAPI server
-│   ├── app/
-│   │   ├── models/    # Pydantic schemas
-│   │   ├── routes/    # API endpoints
-│   │   ├── services/  # Business logic (STT, translation, search)
-│   │   └── database/  # MongoDB connection & seeding
-│   └── ml/            # Recommendation model
-└── data/              # Product dataset & processing
+│   └── app/
+│       ├── routes/      # voice, products, cart, recommendations
+│       ├── services/    # STT, translation, TTS, search, recommender
+│       └── database/    # MongoDB connection & seeding
+└── data/              # Scraper & product pipeline
 ```
 
 ## Features
 
+- Chat-style UI with conversational voice assistant
 - Voice search in 8 Indian languages
-- Real-time speech-to-text with Deepgram
-- Smart intent parsing (color, category, price range)
-- Product recommendations (ML-based)
+- Speech-to-text via Deepgram Nova-2 REST API
+- Smart intent parsing (color, category, price range, gender)
+- 300 real products scraped from Indian fashion stores
 - Text-to-speech responses in user's language
-- Mobile-first responsive design
+- Product recommendations (ML content-based filtering)
 - Shopping cart with session management
+- Mobile-first responsive design

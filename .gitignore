@@ -17,6 +17,7 @@ backend/ml/model/*.pkl
 # Data
 data/raw/*.csv
 data/raw/*.json
+data/raw_scraped.json
 
 # IDE
 .vscode/
