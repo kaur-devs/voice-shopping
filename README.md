@@ -103,3 +103,4 @@ python -m app.database.seed
 - Product recommendations (ML content-based filtering)
 - Shopping cart with session management
 - Mobile-first responsive design
+- Horizontal scrollable product cards in chat results
