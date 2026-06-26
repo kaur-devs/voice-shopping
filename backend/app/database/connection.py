@@ -1,3 +1,4 @@
+import certifi
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.config import MONGODB_URI, DATABASE_NAME
 
@@ -7,10 +8,17 @@ db = None
 
 async def connect_db():
     global client, db
-    client = AsyncIOMotorClient(MONGODB_URI)
-    db = client[DATABASE_NAME]
-    await db.products.create_index([("name", "text"), ("category", "text"), ("tags", "text")])
-    print(f"Connected to MongoDB: {DATABASE_NAME}")
+    try:
+        client = AsyncIOMotorClient(MONGODB_URI, tlsCAFile=certifi.where(), serverSelectionTimeoutMS=10000)
+        _db = client[DATABASE_NAME]
+        await _db.products.create_index([("name", "text"), ("category", "text"), ("tags", "text")])
+        db = _db
+        print(f"Connected to MongoDB: {DATABASE_NAME}")
+    except Exception as e:
+        client = None
+        db = None
+        print(f"Warning: Could not connect to MongoDB: {e}")
+        print("Server will start but database operations will fail")
 
 
 async def close_db():

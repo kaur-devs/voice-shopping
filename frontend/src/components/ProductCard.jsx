@@ -7,14 +7,14 @@ export default function ProductCard({ product }) {
   return (
     <Link
       to={`/product/${product._id}`}
-      className="group bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all no-underline border border-transparent hover:border-primary/20"
+      className="group bg-card rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 no-underline border border-transparent hover:border-primary/20 hover:-translate-y-1"
     >
-      <div className="aspect-[3/4] bg-gray-100 overflow-hidden relative">
+      <div className="aspect-[3/4] bg-gray-50 overflow-hidden relative">
         {hasImage ? (
           <img
             src={product.image_url}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
           />
         ) : (
@@ -24,14 +24,14 @@ export default function ProductCard({ product }) {
         )}
 
         {product.discount && (
-          <span className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded">
+          <span className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded-lg shadow-sm">
             {product.discount}
           </span>
         )}
       </div>
 
       <div className="p-3">
-        <p className="text-xs text-text-light font-medium uppercase tracking-wide truncate">
+        <p className="text-[11px] text-text-light font-medium uppercase tracking-wider truncate">
           {product.brand}
         </p>
         <h3 className="text-sm text-text font-medium mt-1 line-clamp-2 leading-snug">
@@ -51,7 +51,7 @@ export default function ProductCard({ product }) {
 
         {product.rating > 0 && (
           <div className="flex items-center gap-1 mt-1.5">
-            <span className="flex items-center gap-0.5 bg-green-600 text-white text-xs px-1.5 py-0.5 rounded">
+            <span className="flex items-center gap-0.5 bg-green-600 text-white text-xs px-1.5 py-0.5 rounded-md">
               {product.rating} <FiStar size={10} fill="white" />
             </span>
           </div>

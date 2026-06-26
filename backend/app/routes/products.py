@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Query
+from fastapi.responses import JSONResponse
 from app.database.connection import get_db
 from bson import ObjectId
 
@@ -17,6 +18,8 @@ async def list_products(
     search: str = Query(None),
 ):
     db = get_db()
+    if db is None:
+        return JSONResponse(status_code=503, content={"products": [], "total": 0, "page": 1, "pages": 0, "error": "Database unavailable"})
     query = {}
 
     if category:
@@ -68,6 +71,8 @@ async def list_products(
 @router.get("/categories")
 async def get_categories():
     db = get_db()
+    if db is None:
+        return {"categories": []}
     categories = await db.products.distinct("category")
     return {"categories": [c for c in categories if c]}
 
@@ -75,6 +80,8 @@ async def get_categories():
 @router.get("/{product_id}")
 async def get_product(product_id: str):
     db = get_db()
+    if db is None:
+        return {"error": "Database unavailable"}
     try:
         doc = await db.products.find_one({"_id": ObjectId(product_id)})
     except Exception:
