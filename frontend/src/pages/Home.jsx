@@ -121,10 +121,23 @@ export default function Home() {
   const { t, i18n } = useTranslation()
   const { isRecording, audioBlob, error, startRecording, stopRecording, resetRecording } = useVoiceRecorder()
 
-  const [messages, setMessages] = useState([])
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = localStorage.getItem('chat_messages')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  })
   const [inputText, setInputText] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
   const messagesEndRef = useRef(null)
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('chat_messages', JSON.stringify(messages))
+    } catch {}
+  }, [messages])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
